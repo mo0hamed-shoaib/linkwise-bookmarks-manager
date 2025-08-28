@@ -1,5 +1,9 @@
-import { createClient } from '@/lib/supabase-server'
-import { redirect } from 'next/navigation'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { createBrowserSupabaseClient } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
+import { Bookmark as BookmarkType } from '@/types'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Bookmark, Plus, Star, Hash, Folder } from 'lucide-react'
@@ -14,45 +18,80 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
+import { AddBookmarkModal } from '@/components/add-bookmark-modal'
+import { ViewToggle, ViewMode } from '@/components/view-toggle'
+import { BookmarkCard } from '@/components/bookmark-card'
+import { BookmarkList } from '@/components/bookmark-list'
+import { Footer } from '@/components/footer'
 
-export default async function DashboardPage() {
-  const supabase = await createClient()
-  
-  const { data: { user } } = await supabase.auth.getUser()
-  
-  if (!user) {
-    redirect('/auth')
+export default function DashboardPage() {
+  const [user, setUser] = useState<any>(null)
+  const [bookmarks, setBookmarks] = useState<BookmarkType[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [viewMode, setViewMode] = useState<ViewMode>('grid')
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const router = useRouter()
+  const supabase = createBrowserSupabaseClient()
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.push('/login')
+        return
+      }
+      setUser(user)
+      fetchBookmarks(user.id)
+    }
+
+    getUser()
+  }, [router, supabase.auth])
+
+  const fetchBookmarks = async (userId: string) => {
+    try {
+      const { data: bookmarksData } = await supabase
+        .from('bookmarks')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+
+      setBookmarks(bookmarksData || [])
+    } catch (error) {
+      console.error('Error fetching bookmarks:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  // Fetch recent bookmarks
-  const { data: recentBookmarks } = await supabase
-    .from('bookmarks')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
-    .limit(5)
+  const handleDeleteBookmark = (id: string) => {
+    setBookmarks(bookmarks.filter(bookmark => bookmark.id !== id))
+  }
 
-  // Fetch stats
-  const { count: totalBookmarks } = await supabase
-    .from('bookmarks')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id)
+  const handleToggleFavorite = (id: string, isFavorite: boolean) => {
+    setBookmarks(bookmarks.map(bookmark => 
+      bookmark.id === id ? { ...bookmark, is_favorite: isFavorite } : bookmark
+    ))
+  }
 
-  const { count: favoriteBookmarks } = await supabase
-    .from('bookmarks')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id)
-    .eq('is_favorite', true)
+  const handleAddBookmark = () => {
+    setIsAddModalOpen(false)
+    if (user) {
+      fetchBookmarks(user.id)
+    }
+  }
 
-  const { count: totalTags } = await supabase
-    .from('tags')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id)
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
 
-  const { count: totalCategories } = await supabase
-    .from('categories')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id)
+  // Calculate stats
+  const totalBookmarks = bookmarks.length
+  const favoriteBookmarks = bookmarks.filter(b => b.is_favorite).length
+  const recentBookmarks = bookmarks.slice(0, 5)
 
   return (
     <>
@@ -86,12 +125,13 @@ export default async function DashboardPage() {
               Welcome back! Here's an overview of your bookmarks.
             </p>
           </div>
-          <Button asChild>
-            <Link href="/dashboard/bookmarks/add">
+          <div className="flex items-center gap-2">
+            <ViewToggle view={viewMode} onViewChange={setViewMode} />
+            <Button onClick={() => setIsAddModalOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               Add Bookmark
-            </Link>
-          </Button>
+            </Button>
+          </div>
         </div>
 
       {/* Stats Cards */}
@@ -116,20 +156,20 @@ export default async function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tags</CardTitle>
-            <Hash className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Recent</CardTitle>
+            <Bookmark className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalTags || 0}</div>
+            <div className="text-2xl font-bold">{recentBookmarks.length}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Categories</CardTitle>
+            <CardTitle className="text-sm font-medium">Total</CardTitle>
             <Folder className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalCategories || 0}</div>
+            <div className="text-2xl font-bold">{totalBookmarks}</div>
           </CardContent>
         </Card>
       </div>
@@ -143,34 +183,25 @@ export default async function DashboardPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {recentBookmarks && recentBookmarks.length > 0 ? (
-            <div className="space-y-4">
-              {recentBookmarks.map((bookmark) => (
-                <div
-                  key={bookmark.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="w-8 h-8 bg-muted rounded flex items-center justify-center">
-                      <Bookmark className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium">{bookmark.title}</h3>
-                      <p className="text-sm text-muted-foreground">{bookmark.url}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    {bookmark.is_favorite && (
-                      <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                    )}
-                    <Button variant="outline" size="sm" asChild>
-                      <a href={bookmark.url} target="_blank" rel="noopener noreferrer">
-                        Visit
-                      </a>
-                    </Button>
-                  </div>
-                </div>
-              ))}
+          {bookmarks.length > 0 ? (
+            <div className={viewMode === 'grid' ? 'grid gap-4 md:grid-cols-2 lg:grid-cols-3' : 'space-y-4'}>
+              {bookmarks.map((bookmark) => 
+                viewMode === 'grid' ? (
+                  <BookmarkCard
+                    key={bookmark.id}
+                    bookmark={bookmark}
+                    onDelete={handleDeleteBookmark}
+                    onToggleFavorite={handleToggleFavorite}
+                  />
+                ) : (
+                  <BookmarkList
+                    key={bookmark.id}
+                    bookmark={bookmark}
+                    onDelete={handleDeleteBookmark}
+                    onToggleFavorite={handleToggleFavorite}
+                  />
+                )
+              )}
             </div>
           ) : (
             <div className="text-center py-8">
@@ -179,17 +210,22 @@ export default async function DashboardPage() {
               <p className="text-muted-foreground mb-4">
                 Start by adding your first bookmark
               </p>
-              <Button asChild>
-                <Link href="/dashboard/bookmarks/add">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Your First Bookmark
-                </Link>
+              <Button onClick={() => setIsAddModalOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Your First Bookmark
               </Button>
             </div>
           )}
         </CardContent>
       </Card>
       </div>
+      
+      <AddBookmarkModal 
+        open={isAddModalOpen} 
+        onOpenChange={setIsAddModalOpen} 
+      />
+      
+      <Footer />
     </>
   )
 }
