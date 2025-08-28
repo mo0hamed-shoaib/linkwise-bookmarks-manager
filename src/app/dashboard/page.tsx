@@ -97,7 +97,8 @@ export default function DashboardPage() {
 
   return (
     <>
-      <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+      <div className="flex flex-1 flex-col gap-4 p-4">
+        {/* Row 1: Breadcrumbs */}
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1" />
           <Separator
@@ -118,26 +119,24 @@ export default function DashboardPage() {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-      </header>
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+
+        {/* Row 2: Page Title + Actions */}
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-            <p className="text-muted-foreground">
-              Welcome back! Here's an overview of your bookmarks.
-            </p>
-          </div>
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <div className="flex items-center gap-2">
-            <ViewToggle view={viewMode} onViewChange={setViewMode} />
             <Button onClick={() => setIsAddModalOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               Add Bookmark
             </Button>
+            <ViewToggle view={viewMode} onViewChange={setViewMode} />
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="flex items-center gap-4">
+        {/* Row 3: Subtitle + Search */}
+        <div className="space-y-4">
+          <p className="text-muted-foreground">
+            Welcome back! Here's an overview of your bookmarks.
+          </p>
           <Button
             variant="outline"
             className="w-full max-w-md justify-start text-muted-foreground"
