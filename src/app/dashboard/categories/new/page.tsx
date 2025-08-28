@@ -211,29 +211,29 @@ export default function NewCategoryPage() {
 
               <div className="grid gap-2">
                 <Label htmlFor="parent">Parent Category (Optional)</Label>
-                <Select
-                  value={parentId || ''}
-                  onValueChange={(value) => setParentId(value || null)}
-                  disabled={isLoading || isLoadingCategories}
-                >
-                  <SelectTrigger className="flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]">
-                    <SelectValue placeholder="Select parent category (optional)" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">No parent (root category)</SelectItem>
-                    {categories.map(category => (
-                      <SelectItem key={category.id} value={category.id}>
-                        <div className="flex items-center gap-2">
-                          <Folder 
-                            className="h-4 w-4" 
-                            style={{ color: category.color || '#3b82f6' }} 
-                          />
-                          {category.path.join(' > ')}
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                                 <Select
+                   value={parentId || 'none'}
+                   onValueChange={(value) => setParentId(value === 'none' ? null : value)}
+                   disabled={isLoading || isLoadingCategories}
+                 >
+                   <SelectTrigger className="flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]">
+                     <SelectValue placeholder="Select parent category (optional)" />
+                   </SelectTrigger>
+                   <SelectContent>
+                     <SelectItem value="none">No parent (root category)</SelectItem>
+                     {categories.map(category => (
+                       <SelectItem key={category.id} value={category.id}>
+                         <div className="flex items-center gap-2">
+                           <Folder 
+                             className="h-4 w-4" 
+                             style={{ color: category.color || '#3b82f6' }} 
+                           />
+                           {category.path.join(' > ')}
+                         </div>
+                       </SelectItem>
+                     ))}
+                   </SelectContent>
+                 </Select>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
