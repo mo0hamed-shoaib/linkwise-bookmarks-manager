@@ -21,15 +21,29 @@ CREATE TABLE IF NOT EXISTS profiles (
 CREATE TABLE IF NOT EXISTS categories (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  parent_id UUID REFERENCES categories(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
-  color TEXT DEFAULT '#3b82f6',
-  icon TEXT DEFAULT 'folder',
-  sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE(user_id, parent_id, name)
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Add columns for unlimited nesting support (if they don't exist)
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS parent_id UUID REFERENCES categories(id) ON DELETE CASCADE;
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS color TEXT DEFAULT '#3b82f6';
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS icon TEXT DEFAULT 'folder';
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0;
+
+-- Add unique constraint for (user_id, parent_id, name) combination
+DO $$
+BEGIN
+    -- Check if the constraint already exists
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'categories_user_parent_name_unique'
+    ) THEN
+        ALTER TABLE categories ADD CONSTRAINT categories_user_parent_name_unique 
+        UNIQUE(user_id, parent_id, name);
+    END IF;
+END $$;
 
 -- Create bookmarks table
 CREATE TABLE IF NOT EXISTS bookmarks (
@@ -49,6 +63,21 @@ CREATE TABLE IF NOT EXISTS bookmarks (
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE bookmarks ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist (to avoid conflicts)
+DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
+
+DROP POLICY IF EXISTS "Users can view own categories" ON categories;
+DROP POLICY IF EXISTS "Users can insert own categories" ON categories;
+DROP POLICY IF EXISTS "Users can update own categories" ON categories;
+DROP POLICY IF EXISTS "Users can delete own categories" ON categories;
+
+DROP POLICY IF EXISTS "Users can view own bookmarks" ON bookmarks;
+DROP POLICY IF EXISTS "Users can insert own bookmarks" ON bookmarks;
+DROP POLICY IF EXISTS "Users can update own bookmarks" ON bookmarks;
+DROP POLICY IF EXISTS "Users can delete own bookmarks" ON bookmarks;
 
 -- Profiles policies
 CREATE POLICY "Users can view own profile" ON profiles FOR SELECT USING (auth.uid() = id);
@@ -102,6 +131,10 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Create triggers for updated_at
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON profiles;
+DROP TRIGGER IF EXISTS update_categories_updated_at ON categories;
+DROP TRIGGER IF EXISTS update_bookmarks_updated_at ON bookmarks;
+
 CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON profiles FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_categories_updated_at BEFORE UPDATE ON categories FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_bookmarks_updated_at BEFORE UPDATE ON bookmarks FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
