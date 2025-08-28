@@ -23,6 +23,7 @@ import { ViewToggle, ViewMode } from '@/components/view-toggle'
 import { BookmarkCard } from '@/components/bookmark-card'
 import { BookmarkList } from '@/components/bookmark-list'
 import { Footer } from '@/components/footer'
+import { CommandMenu } from '@/components/command-menu'
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null)
@@ -30,6 +31,7 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [isCommandOpen, setIsCommandOpen] = useState(false)
   const router = useRouter()
   const supabase = createBrowserSupabaseClient()
 
@@ -134,6 +136,18 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Search Bar */}
+        <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            className="w-full max-w-md justify-start text-muted-foreground"
+            onClick={() => setIsCommandOpen(true)}
+          >
+            <Bookmark className="mr-2 h-4 w-4" />
+            <span>Search bookmarks, tags, categories...</span>
+          </Button>
+        </div>
+
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -225,7 +239,10 @@ export default function DashboardPage() {
         onOpenChange={setIsAddModalOpen} 
       />
       
-      <Footer />
+      <CommandMenu 
+        open={isCommandOpen} 
+        onOpenChange={setIsCommandOpen} 
+      />
     </>
   )
 }

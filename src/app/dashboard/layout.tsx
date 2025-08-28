@@ -6,6 +6,7 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar'
 import { createBrowserSupabaseClient } from '@/lib/supabase'
 import { useEffect } from 'react'
 import { User } from '@supabase/supabase-js'
+import { Footer } from '@/components/footer'
 
 export default function DashboardLayout({
   children,
@@ -52,8 +53,11 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar user={sidebarUser} />
-      <SidebarInset>
-        {children}
+      <SidebarInset className="flex flex-col min-h-screen">
+        <main className="flex-1">
+          {children}
+        </main>
+        <Footer />
       </SidebarInset>
     </SidebarProvider>
   )
