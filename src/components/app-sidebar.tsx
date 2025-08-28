@@ -133,7 +133,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2">
           <Bookmark className="h-6 w-6" />
-          <span className="font-bold text-lg">Linkwise</span>
+          <span className="font-bold text-lg group-data-[collapsible=icon]:hidden">Linkwise</span>
         </div>
       </SidebarHeader>
       <SidebarContent>
