@@ -8,6 +8,8 @@ import {
   Heart,
   Home,
   Settings2,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -18,7 +20,12 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  SidebarMenuButton,
+  SidebarMenu,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Button } from "@/components/ui/button"
+import { useSidebar } from "@/components/ui/sidebar"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user?: {
@@ -39,82 +46,32 @@ const navItems = [
         title: "Overview",
         url: "/dashboard",
       },
-      {
-        title: "Recent Bookmarks",
-        url: "/dashboard/recent",
-      },
     ],
   },
   {
     title: "All Bookmarks",
     url: "/dashboard/bookmarks",
     icon: Bookmark,
-    items: [
-      {
-        title: "View All",
-        url: "/dashboard/bookmarks",
-      },
-      {
-        title: "Add Bookmark",
-        url: "/dashboard/bookmarks/add",
-      },
-    ],
   },
   {
     title: "Tags",
     url: "/dashboard/tags",
     icon: Hash,
-    items: [
-      {
-        title: "All Tags",
-        url: "/dashboard/tags",
-      },
-      {
-        title: "Create Tag",
-        url: "/dashboard/tags/create",
-      },
-    ],
   },
   {
     title: "Categories",
     url: "/dashboard/categories",
     icon: Folder,
-    items: [
-      {
-        title: "All Categories",
-        url: "/dashboard/categories",
-      },
-      {
-        title: "Create Category",
-        url: "/dashboard/categories/create",
-      },
-    ],
   },
   {
     title: "Favorites",
     url: "/dashboard/favorites",
     icon: Heart,
-    items: [
-      {
-        title: "View Favorites",
-        url: "/dashboard/favorites",
-      },
-    ],
   },
   {
     title: "Settings",
     url: "/dashboard/settings",
     icon: Settings2,
-    items: [
-      {
-        title: "Profile",
-        url: "/dashboard/settings/profile",
-      },
-      {
-        title: "Preferences",
-        url: "/dashboard/settings/preferences",
-      },
-    ],
   },
 ]
 
@@ -138,6 +95,14 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navItems} />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton tooltip="Expand All">
+              <ChevronDown className="h-4 w-4" />
+              <span className="group-data-[collapsible=icon]:hidden">Expand All</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={currentUser} />

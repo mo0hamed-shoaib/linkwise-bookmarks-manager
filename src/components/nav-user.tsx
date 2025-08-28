@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { createBrowserSupabaseClient } from "@/lib/supabase"
 import {
   BadgeCheck,
@@ -97,13 +98,17 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <User />
-                Profile
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/profile">
+                  <User />
+                  Profile
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings />
-                Settings
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/settings">
+                  <Settings />
+                  Settings
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
