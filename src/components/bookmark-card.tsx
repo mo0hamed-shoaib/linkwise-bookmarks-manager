@@ -78,7 +78,7 @@ export function BookmarkCard({ bookmark, onDelete, onToggleFavorite }: BookmarkC
   }
 
   return (
-    <Card className="group hover:shadow-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer border-l-4 border-l-transparent hover:border-l-blue-500">
+    <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md transition-all duration-200 group">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-2 flex-1 min-w-0">
@@ -105,7 +105,7 @@ export function BookmarkCard({ bookmark, onDelete, onToggleFavorite }: BookmarkC
               <Button
                 variant="ghost"
                 size="sm"
-                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent hover:text-accent-foreground"
                 disabled={isLoading}
               >
                 <MoreHorizontal className="h-4 w-4" />

@@ -85,7 +85,7 @@ export function BookmarkList({ bookmark, onDelete, onToggleFavorite }: BookmarkL
   }
 
   return (
-    <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 hover:shadow-md hover:scale-[1.01] transition-all duration-200 group cursor-pointer border-l-4 border-l-transparent hover:border-l-green-500">
+    <div className="flex items-center justify-between p-6 border rounded-xl hover:bg-muted/50 hover:shadow-md transition-all duration-200 group">
       <div className="flex items-center space-x-4 flex-1 min-w-0">
         <div className="flex-shrink-0">
           {getFaviconUrl(bookmark.url) ? (
@@ -136,6 +136,7 @@ export function BookmarkList({ bookmark, onDelete, onToggleFavorite }: BookmarkL
           size="sm"
           onClick={handleToggleFavorite}
           disabled={isLoading}
+          className="hover:bg-accent hover:text-accent-foreground"
         >
           {bookmark.is_favorite ? (
             <Star className="w-4 h-4 text-yellow-500 fill-current" />
@@ -147,6 +148,7 @@ export function BookmarkList({ bookmark, onDelete, onToggleFavorite }: BookmarkL
           variant="ghost"
           size="sm"
           asChild
+          className="hover:bg-accent hover:text-accent-foreground"
         >
           <a href={bookmark.url} target="_blank" rel="noopener noreferrer">
             <ExternalLink className="w-4 h-4" />
@@ -157,7 +159,7 @@ export function BookmarkList({ bookmark, onDelete, onToggleFavorite }: BookmarkL
             <Button
               variant="ghost"
               size="sm"
-              className="opacity-0 group-hover:opacity-100 transition-opacity"
+              className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent hover:text-accent-foreground"
               disabled={isLoading}
             >
               <MoreHorizontal className="h-4 w-4" />

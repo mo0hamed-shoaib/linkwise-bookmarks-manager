@@ -148,57 +148,65 @@ export default function DashboardPage() {
         </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="group hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer border-l-4 border-l-blue-500">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Bookmarks</CardTitle>
-            <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/20">
-              <Bookmark className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md transition-all duration-200">
+          <CardHeader className="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium">Total Bookmarks</CardTitle>
+              <div className="p-2 rounded-lg bg-muted/50">
+                <Bookmark className="h-4 w-4 text-primary" />
+              </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{totalBookmarks || 0}</div>
-            <p className="text-xs text-muted-foreground mt-1">All saved links</p>
+          <CardContent className="px-6">
+            <div className="text-2xl font-bold tabular-nums">{totalBookmarks || 0}</div>
+            <p className="text-sm text-muted-foreground mt-1">All saved links</p>
           </CardContent>
         </Card>
-        <Card className="group hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer border-l-4 border-l-red-500">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Favorites</CardTitle>
-            <div className="p-2 rounded-lg bg-red-100 dark:bg-red-900/20">
-              <Star className="h-4 w-4 text-red-600 dark:text-red-400" />
+        <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md transition-all duration-200">
+          <CardHeader className="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium">Favorites</CardTitle>
+              <div className="p-2 rounded-lg bg-muted/50">
+                <Star className="h-4 w-4 text-destructive" />
+              </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600 dark:text-red-400">{favoriteBookmarks || 0}</div>
-            <p className="text-xs text-muted-foreground mt-1">Starred bookmarks</p>
+          <CardContent className="px-6">
+            <div className="text-2xl font-bold tabular-nums">{favoriteBookmarks || 0}</div>
+            <p className="text-sm text-muted-foreground mt-1">Starred bookmarks</p>
           </CardContent>
         </Card>
-        <Card className="group hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer border-l-4 border-l-green-500">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Recent</CardTitle>
-            <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/20">
-              <Bookmark className="h-4 w-4 text-green-600 dark:text-green-400" />
+        <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md transition-all duration-200">
+          <CardHeader className="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium">Recent</CardTitle>
+              <div className="p-2 rounded-lg bg-muted/50">
+                <Bookmark className="h-4 w-4 text-accent-foreground" />
+              </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400">{recentBookmarks.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">Added this week</p>
+          <CardContent className="px-6">
+            <div className="text-2xl font-bold tabular-nums">{recentBookmarks.length}</div>
+            <p className="text-sm text-muted-foreground mt-1">Added this week</p>
           </CardContent>
         </Card>
-        <Card className="group hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer border-l-4 border-l-purple-500">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tags</CardTitle>
-            <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/20">
-              <Hash className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+        <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md transition-all duration-200">
+          <CardHeader className="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium">Tags</CardTitle>
+              <div className="p-2 rounded-lg bg-muted/50">
+                <Hash className="h-4 w-4 text-secondary-foreground" />
+              </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+          <CardContent className="px-6">
+            <div className="text-2xl font-bold tabular-nums">
               {bookmarks.reduce((acc, bookmark) => {
                 return acc + (bookmark.tags?.length || 0)
               }, 0)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Total tags used</p>
+            <p className="text-sm text-muted-foreground mt-1">Total tags used</p>
           </CardContent>
         </Card>
       </div>
