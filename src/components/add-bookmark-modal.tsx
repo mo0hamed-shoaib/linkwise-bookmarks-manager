@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { createBrowserSupabaseClient } from '@/lib/supabase'
+import { Category, CategoryTree } from '@/types'
+import { buildCategoryTree } from '@/lib/category-utils'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -15,6 +17,8 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Folder } from 'lucide-react'
 
 interface AddBookmarkModalProps {
   open: boolean
@@ -25,7 +29,41 @@ export function AddBookmarkModal({ open, onOpenChange }: AddBookmarkModalProps) 
   const router = useRouter()
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
+  const [categoryId, setCategoryId] = useState<string | null>(null)
+  const [categories, setCategories] = useState<CategoryTree[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true)
+
+  // Fetch categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const supabase = createBrowserSupabaseClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        
+        if (user) {
+          const { data: categoriesData } = await supabase
+            .from('categories')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('sort_order', { ascending: true })
+          
+          if (categoriesData) {
+            const categoryTree = buildCategoryTree(categoriesData)
+            setCategories(categoryTree)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error)
+      } finally {
+        setIsLoadingCategories(false)
+      }
+    }
+
+    if (open) {
+      fetchCategories()
+    }
+  }, [open])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -62,6 +100,7 @@ export function AddBookmarkModal({ open, onOpenChange }: AddBookmarkModalProps) 
           url: url.trim(),
           description: '',
           tags: [],
+          category_id: categoryId,
           is_favorite: false
         })
 
@@ -72,6 +111,7 @@ export function AddBookmarkModal({ open, onOpenChange }: AddBookmarkModalProps) 
       toast.success('Bookmark added successfully!')
       setTitle('')
       setUrl('')
+      setCategoryId(null)
       onOpenChange(false)
       
       // Refresh the page to show the new bookmark
@@ -88,6 +128,7 @@ export function AddBookmarkModal({ open, onOpenChange }: AddBookmarkModalProps) 
     if (!newOpen) {
       setTitle('')
       setUrl('')
+      setCategoryId(null)
     }
     onOpenChange(newOpen)
   }
@@ -125,6 +166,32 @@ export function AddBookmarkModal({ open, onOpenChange }: AddBookmarkModalProps) 
                 className="flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
                 disabled={isLoading}
               />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="category">Category (Optional)</Label>
+              <Select
+                value={categoryId || ''}
+                onValueChange={(value) => setCategoryId(value || null)}
+                disabled={isLoading || isLoadingCategories}
+              >
+                <SelectTrigger className="flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]">
+                  <SelectValue placeholder="Select a category (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">No category</SelectItem>
+                  {categories.map(category => (
+                    <SelectItem key={category.id} value={category.id}>
+                      <div className="flex items-center gap-2">
+                        <Folder 
+                          className="h-4 w-4" 
+                          style={{ color: category.color || '#3b82f6' }} 
+                        />
+                        {category.path.join(' > ')}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <DialogFooter className="flex items-center justify-end gap-4 px-6 py-6">
