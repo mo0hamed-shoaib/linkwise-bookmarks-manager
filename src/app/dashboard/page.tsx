@@ -137,14 +137,14 @@ export default function DashboardPage() {
           <p className="text-muted-foreground">
             Welcome back! Here's an overview of your bookmarks.
           </p>
-          <Button
-            variant="outline"
-            className="w-full max-w-md justify-start text-muted-foreground"
-            onClick={() => setIsCommandOpen(true)}
-          >
-            <Bookmark className="mr-2 h-4 w-4" />
-            <span>Search bookmarks, tags, categories...</span>
-          </Button>
+                          <Button
+                  variant="outline"
+                  className="w-full max-w-md justify-start text-muted-foreground border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground"
+                  onClick={() => setIsCommandOpen(true)}
+                >
+                  <Bookmark className="mr-2 h-4 w-4" />
+                  <span>Search bookmarks, tags, categories...</span>
+                </Button>
         </div>
 
       {/* Stats Cards */}

@@ -94,53 +94,54 @@ export function AddBookmarkModal({ open, onOpenChange }: AddBookmarkModalProps) 
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[425px] bg-card text-card-foreground rounded-xl border shadow-sm">
+        <DialogHeader className="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 py-6">
           <DialogTitle>Add Bookmark</DialogTitle>
           <DialogDescription>
             Add a new bookmark to your collection. Enter the title and URL below.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="title" className="text-right">
-                Title
-              </Label>
+          <div className="grid gap-6 px-6">
+            <div className="grid gap-2">
+              <Label htmlFor="title">Title</Label>
               <Input
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter bookmark title"
-                className="col-span-3"
+                className="flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
                 disabled={isLoading}
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="url" className="text-right">
-                URL
-              </Label>
+            <div className="grid gap-2">
+              <Label htmlFor="url">URL</Label>
               <Input
                 id="url"
                 type="url"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://example.com"
-                className="col-span-3"
+                className="flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
                 disabled={isLoading}
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex items-center justify-end gap-4 px-6 py-6">
             <Button 
               type="button" 
               variant="outline" 
               onClick={() => handleOpenChange(false)}
               disabled={isLoading}
+              className="border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="bg-primary text-primary-foreground shadow-xs hover:bg-primary/90"
+            >
               {isLoading ? 'Adding...' : 'Add Bookmark'}
             </Button>
           </DialogFooter>
