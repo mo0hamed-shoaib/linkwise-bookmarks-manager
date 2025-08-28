@@ -78,7 +78,7 @@ export function BookmarkCard({ bookmark, onDelete, onToggleFavorite }: BookmarkC
   }
 
   return (
-    <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md transition-all duration-200 group">
+    <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-200 group">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-2 flex-1 min-w-0">

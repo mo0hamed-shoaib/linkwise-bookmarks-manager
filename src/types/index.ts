@@ -22,10 +22,20 @@ export interface Bookmark {
 export interface Category {
   id: string
   user_id: string
+  parent_id?: string
   name: string
   color?: string
+  icon?: string
+  sort_order?: number
   created_at: string
   updated_at: string
+  children?: Category[]
+}
+
+export interface CategoryTree extends Category {
+  children: CategoryTree[]
+  level: number
+  path: string[]
 }
 
 export interface Tag {

@@ -149,7 +149,7 @@ export default function DashboardPage() {
 
       {/* Stats Cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md transition-all duration-200">
+        <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-200">
           <CardHeader className="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-medium">Total Bookmarks</CardTitle>
@@ -163,7 +163,7 @@ export default function DashboardPage() {
             <p className="text-sm text-muted-foreground mt-1">All saved links</p>
           </CardContent>
         </Card>
-        <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md transition-all duration-200">
+        <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md hover:border-destructive/20 transition-all duration-200">
           <CardHeader className="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-medium">Favorites</CardTitle>
@@ -177,7 +177,7 @@ export default function DashboardPage() {
             <p className="text-sm text-muted-foreground mt-1">Starred bookmarks</p>
           </CardContent>
         </Card>
-        <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md transition-all duration-200">
+        <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md hover:border-accent-foreground/20 transition-all duration-200">
           <CardHeader className="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-medium">Recent</CardTitle>
@@ -191,7 +191,7 @@ export default function DashboardPage() {
             <p className="text-sm text-muted-foreground mt-1">Added this week</p>
           </CardContent>
         </Card>
-        <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md transition-all duration-200">
+        <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm hover:shadow-md hover:border-secondary-foreground/20 transition-all duration-200">
           <CardHeader className="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-medium">Tags</CardTitle>
