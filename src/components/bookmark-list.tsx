@@ -85,7 +85,7 @@ export function BookmarkList({ bookmark, onDelete, onToggleFavorite }: BookmarkL
   }
 
   return (
-    <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors group">
+    <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 hover:shadow-md hover:scale-[1.01] transition-all duration-200 group cursor-pointer border-l-4 border-l-transparent hover:border-l-green-500">
       <div className="flex items-center space-x-4 flex-1 min-w-0">
         <div className="flex-shrink-0">
           {getFaviconUrl(bookmark.url) ? (

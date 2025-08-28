@@ -78,7 +78,7 @@ export function BookmarkCard({ bookmark, onDelete, onToggleFavorite }: BookmarkC
   }
 
   return (
-    <Card className="group hover:shadow-md transition-shadow">
+    <Card className="group hover:shadow-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer border-l-4 border-l-transparent hover:border-l-blue-500">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-2 flex-1 min-w-0">
