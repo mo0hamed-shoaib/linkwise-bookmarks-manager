@@ -76,6 +76,8 @@ const navItems = [
 ]
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
+  const { isCollapsed, setCollapsed } = useSidebar()
+  
   // Default user data if none provided
   const defaultUser = {
     name: "User",
@@ -84,6 +86,10 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
   }
 
   const currentUser = user || defaultUser
+
+  const handleExpandCollapse = () => {
+    setCollapsed(!isCollapsed)
+  }
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -97,9 +103,18 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         <NavMain items={navItems} />
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Expand All">
-              <ChevronDown className="h-4 w-4" />
-              <span className="group-data-[collapsible=icon]:hidden">Expand All</span>
+            <SidebarMenuButton 
+              tooltip={isCollapsed ? "Expand All" : "Collapse All"}
+              onClick={handleExpandCollapse}
+            >
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+              <span className="group-data-[collapsible=icon]:hidden">
+                {isCollapsed ? "Expand All" : "Collapse All"}
+              </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
